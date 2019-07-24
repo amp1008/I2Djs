@@ -192,7 +192,11 @@ function propogateEvent (nodes, mouseCoor, rawEvent, eventType) {
 
 		if (d.in({ x: coOr.x, y: coOr.y })) {
 			if (d.children && d.children.length > 0) {
-				temp = propogateEvent(d.children, {
+				let children = d.children;
+				if (d.quadTree) {
+					children = d.quadTree.in(coOr);
+				}
+				temp = propogateEvent(children, {
 					x: coOr.x,
 					y: coOr.y
 				}, rawEvent, eventType);

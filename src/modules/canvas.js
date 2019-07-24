@@ -6,6 +6,7 @@ import path from './path.js';
 import geometry from './geometry.js';
 import colorMap from './colorMap.js';
 import Events from './events.js';
+import QuadTree from './quadTree.js';
 import { NodePrototype, CollectionPrototype } from './coreApi.js';
 let t2DGeometry = geometry;
 const queueInstance = queue;
@@ -1530,6 +1531,17 @@ CanvasNodeExe.prototype.child = function child (childrens) {
 		console.error('Trying to insert child to nonGroup Element');
 	}
 
+	if (self.children.length > 1000) {
+		if (!self.quadTree) {
+			self.quadTree = new QuadTree();
+			self.updateBBox();
+			self.quadTree.create({ 'width': self.dom.BBox.width, 'height': self.dom.BBox.height, 'l_w': 100, 'l_h': 100 });
+		}
+		for (let i = 0; i < childrens.length; i++) {
+			self.quadTree.addNode(childrens[i]);
+		}
+	}
+
 	this.BBoxUpdate = true;
 	queueInstance.vDomChanged(this.vDomIndex);
 	return self;
@@ -1621,6 +1633,10 @@ CanvasNodeExe.prototype.removeChild = function CremoveChild (obj) {
 	}
 
 	this.BBoxUpdate = true;
+
+	if (this.quadTree) {
+		this.quadTree.removedNode(obj);
+	}
 	queueInstance.vDomChanged(this.vDomIndex);
 };
 
