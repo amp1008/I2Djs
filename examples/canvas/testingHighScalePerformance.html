@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+	<title></title>
+</head>
+<body style="height: 100%;background: black">
+<div id="myCanvas" style="position: absolute; height: 100%;width:100%">
+</div>
+
+<script type="module">
+
+import CanvasLayer from '../../src/modules/canvas.js';
+/*****************
+ A recreation of the Daniel Example (https://codepen.io/scorch/pen/BZjbmW) with I2Djs framework
+ I2Djs - https://github.com/I2Djs/I2Djs
+ *****************/
+
+var renderer_ = CanvasLayer('#myCanvas', { events: true, selectiveClear: false });
+var height = renderer_.height;
+var width = renderer_.width;
+
+var g = renderer_.createEl({
+	el: 'group',
+	attr: {
+		transform: {
+			translate: [10, 10]
+		}
+	}
+});
+
+let pointsArr = [];
+
+for (let i = 0; i < 225; i++) {
+	for (let j = 0; j < 150; j++) {
+		pointsArr.push({
+			'x': i * 6 ,
+			'y': j * 6 
+		});
+	}
+}
+
+g.createEls(pointsArr, {
+				el: 'rect',
+				attr: {
+					x: (d) => (d.x),
+					y: (d) => (d.y),
+					width: 5,
+					height: 5
+				},
+				style: {
+					fillStyle: 'rgba(100, 100, 100, 0.5)',
+
+				}
+			}).on('mouseover', function (d) {
+				console.log('mouseover');
+				this.setStyle('fillStyle', 'rgba(200, 100, 100, 0.7)');
+			}).on('mouseout', function (d) {
+				this.setStyle('fillStyle', 'rgba(100, 100, 100, 0.5)');
+			});;
+
+</script>
+
+</body>
+</html>
